@@ -1,0 +1,30 @@
+{
+  "menu": [
+    {
+      "url": "/",
+      "name": "Dashboard",
+      "icon": "menu-icon tf-icons bx bx-home-circle",
+      "slug": "dashboard-analytics"
+    },
+    {
+      "url": "/registerCustomer",
+      "name": "Register Customer",
+      "icon": "menu-icon tf-icons bx bx-user",
+      "slug": "registerCustomer"
+    },
+    {
+      "url": "/customerDeposit",
+      "name": "Customer Deposit",
+      "icon": "menu-icon tf-icons bx bx-wallet",
+      "slug": "customerDeposit"
+    },
+    {
+      "url": "/expenses",
+      "name": "Company Expense",
+      "icon": "menu-icon tf-icons bx bx-collection",
+      "slug": "expenses"
+    }
+
+    
+  ]
+}
