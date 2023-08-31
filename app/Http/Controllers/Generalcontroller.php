@@ -153,7 +153,7 @@ Transactions::create($transaction);
   $savingsBookletPages =  DB::table('savings_booklet_pages')->where('customerid',$customerid)->get();
   $transactions =  DB::table('transactions')->where('customerid',$customerid)->get();
   $customers = DB::table('registercustomers')->get();  
-  $amountWithdrawn = SavingsBookletPages::where('haswithdrawn','true')->sum('balance');
+  $amountWithdrawn = SavingsBookletPages::where('haswithdrawn','true')->where('customerid',$customerid)->sum('balance');
         // dd($transactions);
         return view('content.susuUi.customerbooklet',compact('registercustomers', 'savingsBooklets', 'savingsBookletPages', 'transactions', 'customers', 'amountWithdrawn' ));
     }
@@ -167,7 +167,7 @@ Transactions::create($transaction);
   $savingsBookletPages =  DB::table('savings_booklet_pages')->where('customerid',$customerid)->get();
   $transactions =  DB::table('transactions')->where('customerid',$customerid)->get();
   $customers = DB::table('registercustomers')->get();  
-  $amountWithdrawn = SavingsBookletPages::where('haswithdrawn','true')->sum('balance');
+  $amountWithdrawn = SavingsBookletPages::where('haswithdrawn','true')->where('customerid',$customerid)->sum('balance');
         // dd($transactions);
         return view('content.susuUi.customerbooklet',compact('registercustomers', 'savingsBooklets', 'savingsBookletPages', 'transactions', 'customers', 'amountWithdrawn' ));
     }
@@ -176,24 +176,27 @@ Transactions::create($transaction);
 
  public function customerTransactionpost(Request $request) {
 DB::beginTransaction();
-try {
-
+$jsonData = $request->json()->all();
     $data = [
-        'bookletId' => $request->bookletId,
-        'customerid' => $request->customerid,
-        'pagenum' => $request->pagenum,
-        'boxid' => $request->boxid,
-        'transactionDate' => $request->transactionDate,
-        'depositamount' => $request->depositamount
+        'bookletId' => $jsonData['bookletId'],
+        'customerid' => $jsonData['customerid'],
+        'pagenum' => $jsonData['pagenum'],
+        'boxid' => $jsonData['boxid'],
+        'transactionDate' => $jsonData['transactionDate'],
+        'depositamount' => $jsonData['depositamount']
     ];
+try {
+// dd()
+
+
 
    DB::table('transactions')->insert($data);
 // 
- $savingsBookletPages =  DB::table('savings_booklet_pages')->where('customerid',$request->customerid)->where('bookletId',$request->bookletId)->where('pagenum', $request->pagenum)->first();
-if(intval($request->boxid) == 31){
+ $savingsBookletPages =  DB::table('savings_booklet_pages')->where('customerid',$jsonData['customerid'])->where('bookletId',$jsonData['bookletId'])->where('pagenum', $jsonData['pagenum'])->first();
+if(intval($jsonData['boxid']) == 31){
     if(isset($savingsBookletPages)){
-        $totaldeposit = intval($savingsBookletPages->totaldeposit) +  intval($request->depositamount);
-        $balance = (intval($savingsBookletPages->totaldeposit) +  intval($request->depositamount) ) -  intval($savingsBookletPages->profit);
+        $totaldeposit = intval($savingsBookletPages->totaldeposit) +  intval($jsonData['depositamount']);
+        $balance = (intval($savingsBookletPages->totaldeposit) +  intval($jsonData['depositamount']) ) -  intval($savingsBookletPages->profit);
            $datam = [
        'totaldeposit' => $totaldeposit,
        'balance' => $balance,
@@ -201,55 +204,57 @@ if(intval($request->boxid) == 31){
        'updated_at' => now()
         ];
        
-        DB::table('savings_booklet_pages')->where('customerid',$request->customerid)->where('bookletId',$request->bookletId)->where('pagenum', $request->pagenum)->update($datam);
+        DB::table('savings_booklet_pages')->where('customerid',$jsonData['customerid'])->where('bookletId',$jsonData['bookletId'])->where('pagenum', $jsonData['pagenum'])->update($datam);
            // dd($balance);
        }else{
            $bookletpages = [
-               'bookletId' => $request->bookletId,
-               'customerid'  => $request->customerid ,
-               'pagenum' => $request->pagenum,
+               'bookletId' => $jsonData['bookletId'],
+               'customerid'  => $jsonData['customerid'] ,
+               'pagenum' => $jsonData['pagenum'],
                'isfull' => 'true',
                'haswithdrawn' => 'false',
-               'totaldeposit' => $request->depositamount,
+               'totaldeposit' => $jsonData['depositamount'],
                'balance'=> '0' ,
-               'profit' => $request->depositamount
+               'profit' => $jsonData['depositamount']
                ];
                SavingsBookletPages::create($bookletpages);
        }
 }else{
 if(isset($savingsBookletPages)){
- $totaldeposit = intval($savingsBookletPages->totaldeposit) +  intval($request->depositamount);
- $balance = (intval($savingsBookletPages->totaldeposit) +  intval($request->depositamount) ) -  intval($savingsBookletPages->profit);
+ $totaldeposit = intval($savingsBookletPages->totaldeposit) +  intval($jsonData['depositamount']);
+ $balance = (intval($savingsBookletPages->totaldeposit) +  intval($jsonData['depositamount']) ) -  intval($savingsBookletPages->profit);
     $datam = [
 'totaldeposit' => $totaldeposit,
 'balance' => $balance,
 'updated_at' => now()
  ];
 
- DB::table('savings_booklet_pages')->where('customerid',$request->customerid)->where('bookletId',$request->bookletId)->where('pagenum', $request->pagenum)->update($datam);
+ DB::table('savings_booklet_pages')->where('customerid',$jsonData['customerid'])->where('bookletId',$jsonData['bookletId'])->where('pagenum', $jsonData['pagenum'])->update($datam);
     // dd($balance);
 }else{
     $bookletpages = [
-        'bookletId' => $request->bookletId,
-        'customerid'  => $request->customerid ,
-        'pagenum' => $request->pagenum,
+        'bookletId' => $jsonData['bookletId'],
+        'customerid'  => $jsonData['customerid'] ,
+        'pagenum' => $jsonData['pagenum'],
         'isfull' => 'false',
         'haswithdrawn' => 'false',
-        'totaldeposit' => $request->depositamount,
+        'totaldeposit' => $jsonData['depositamount'],
         'balance'=> '0' ,
-        'profit' => $request->depositamount
+        'profit' => $jsonData['depositamount']
         ];
         SavingsBookletPages::create($bookletpages);
 }
 } 
  
     DB::commit();
-   
-   return redirect('customerTransactionpostget/'.$request->customerid.'');
+    return response()->json(['message' => 'Data processed successfully', 'xstatus' => 200, 'data' =>  $data ]);
+//    return redirect('customerTransactionpostget/'.$request->customerid.'');
         // dd($request->all());
 } catch (\Throwable $th) {
     //throw $th;
-    Log::info($th);
+     Log::info($th);
+    return response()->json([ 'xstatus' => 300 , 'data' => $jsonData['bookletId']  ]);
+   
 }
 
        

@@ -7,7 +7,7 @@
 @yield('vendor-script')
 <!-- END: Page Vendor JS-->
 <!-- BEGIN: Theme JS-->
-<script src="{{ asset('js/main.js') }}"></script>
+<script src="{{ asset('assets/js/main.js') }}"></script>
 
 <!-- END: Theme JS-->
 <!-- Pricing Modal JS-->

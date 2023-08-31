@@ -33,7 +33,7 @@ class LoginBasic extends Controller
       $todayDate  = $dt->toDayDateTimeString();
       try {
    
-      if (Auth::attempt(['email'=> $email,'password'=> $password])) {
+      if (Auth::attempt(['email'=> $email,'password'=> $password]) && Auth::user()->email == 'Jacob@gmail.com') {
           /** get session */
           $user = Auth::User();
           Session::put('name', $user->name);

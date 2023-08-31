@@ -61,7 +61,7 @@
               </div>
             </div>
             <span class="fw-semibold d-block mb-1">Total Deposit</span>
-            <h3 class="card-title mb-2">
+            <h3 class="card-title mb-2" >
               @if (!empty($savingsBookletPages))
                 @php
                 
@@ -70,9 +70,9 @@
                       $depositssum += $value->totaldeposit;
                        }
                 @endphp
-              GHS {{  $depositssum }}
+              GHS <span id="depost"> {{  $depositssum }} </span>
               @else
-                {{  '-' }}
+              <span id="depost"> {{  '-' }}</span> 
               @endif
             </h3>
             {{-- <small class="text-success fw-semibold"><i class='bx bx-up-arrow-alt'></i> 66%</small> --}}
@@ -97,7 +97,7 @@
               </div>
             </div>
             <span>Balance</span>
-            <h3 class="card-title text-nowrap mb-1"> 
+            <h3 class="card-title text-nowrap mb-1" > 
                @if (!empty($savingsBookletPages))
               @php
               
@@ -106,9 +106,9 @@
                     $depositssum += $value->balance;
                      }
               @endphp
-            GHS {{  $depositssum - $amountWithdrawn }}
+            GHS  <span id="balancee">{{  $depositssum - $amountWithdrawn }}</span>
             @else
-              {{  '-' }}
+            <span id="balancee"> {{  '-' }}</span> 
             @endif
           </h3>
             {{-- <small class="text-success fw-semibold"><i class='bx bx-up-arrow-alt'></i> 5%</small> --}}
@@ -278,11 +278,10 @@
                         @break
                         @endif
                         @endforeach
-                        
-                        <tr>
-                          <form action="{{ route('customerTransactionpost') }}" method="post">
-                            @csrf
-                            <td>{{ $boxId }}</td>
+                        {{-- customerTransactionpost --}}
+                        <tr class="myFormContainer">
+                         
+                          <td>{{ $boxId }}</td>
                             <td>
                               @if ($foundTransaction)
                                   {{\Carbon\Carbon::parse($transactionDate)->format('F j, Y g:i A') }}
@@ -305,11 +304,11 @@
                                     <input type="hidden" name="boxid" value="{{ $boxId }}">
                                     <input type="hidden" name="bookletId" value="{{ $savingsBooklets->bookletId }}">
                                     <input type="hidden" name="customerid" value="{{ $savingsBooklets->customerid }}">
-                                    <button type="submit" class="btn btn-success px-2">Save</button>
+                                    <button type="button" class="btn btn-success px-2 submitFormButton" >Save</button>
                                 
                                 @endif
                             </td>
-                          </form>
+                           
                         </tr>
                         @endfor
                     </tbody>
@@ -322,132 +321,105 @@
   </div>
 </div>
 
-    {{-- @for ($i = 0; $i < $savingsBooklets->maxpages; $i++)
-    @php
-    $foundTransaction = false; // Set the flag since a matching transaction was found
-    $foundTransactionCount = 0;
-@endphp
-    <div class="table-responsive mt-2 ">
-      <div class="row justify-content-center align-items-center g-2 bg-primary mx-2 px-2 ">
-        <div class="col"><h5 class="card-header text-white">Page No. {{ $i + 1 }}</h5></div>
-        <div class="col">
-          <form action="{{ route('withdrawpage') }}" method="post"  style="float: right">
-            @csrf
-          <button type="submit" class="btn btn-dark ">Withdraw </button>
-        </form>
-        </div>
-       
-      </div>
-        
-        
-        <table class="table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Date</th>
-                <th>Deposit Amount</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody class="table-border-bottom">
-               
-                @php
-    $lastBoxId = 0; // Initialize the last boxid variable
-@endphp
-                @for ($ii = 1; $ii < 32; $ii++)
-                @if (!empty($transactions))
-               
-   @foreach ($transactions as $key => $transaction)
-@php
     
-    $boxidValue = intval($transaction->boxid);
-
-    $pgnum = intval($transaction->pagenum);
-@endphp
-                    @if ($boxidValue == $ii && $pgnum == ($i + 1 ))
-                    @php
-                    $foundTransaction = true;
-               $foundTransactionCount = count($transactions);   
-   
-           if ($foundTransaction) {
-               $lastBoxId = $ii; // Update the last boxid if a transaction is found
-           }
-             @endphp
-                    <tr> 
-                        <form action="{{ route('customerTransactionpost') }}" method="post">
-                            @csrf
-                            <input type="hidden" name="pagenum" value="{{ $i + 1 }}">
-        <input type="hidden" name="bookletId" value="{{ $savingsBooklets->bookletId }}">
-        <input type="hidden" name="customerid" value="{{ $savingsBooklets->customerid }}">
-                        <td> <input readonly class="form-control" type="text" name="boxid" value="{{ $ii }}" />    </td>
-                        <td>{{\Carbon\Carbon::parse($transaction->transactionDate)->format('F j, Y g:i A') }} </td>
-                        <td>{{$transaction->depositamount}} </td>
-                        <td>  <button type="button" disabled class="btn btn-primary px-2 ">Paid  pagenumDB : {{ $pgnum }} => boxidDB : {{ $boxidValue }} =>   ii: {{ $ii }} => counttransactions: {{$foundTransactionCount  }}</button> </td>
-                   </form>
-                 </tr>
-                  
-                    @endif
-
-   @endforeach
-
-@if ($foundTransaction == true  && ($ii > $foundTransactionCount) )
-
-   <tr> 
-    <form action="{{ route('customerTransactionpost') }}" method="post">
-        @csrf
-        <input type="hidden" name="pagenum" value="{{ $i + 1 }}">
-<input type="hidden" name="bookletId" value="{{ $savingsBooklets->bookletId }}">
-<input type="hidden" name="customerid" value="{{ $savingsBooklets->customerid }}">
-    <td>  <input readonly class="form-control" type="text" name="boxid" value="{{ $ii }}" />  </td>
-    <td> <input required class="form-control" name="transactionDate" type="datetime-local" /> </td>
-    <td> <input required class="form-control" type="text" placeholder="eg:amount" name="depositamount"/> </td>
-    <td>  <button type="submit" class="btn btn-success px-2 ">Saves</button> </td>
-</form> 
-</tr> 
- 
-@elseif ($foundTransaction == false  )
-<tr> 
-    <form action="{{ route('customerTransactionpost') }}" method="post">
-        @csrf
-        <input type="hidden" name="pagenum" value="{{ $i + 1 }}">
-<input type="hidden" name="bookletId" value="{{ $savingsBooklets->bookletId }}">
-<input type="hidden" name="customerid" value="{{ $savingsBooklets->customerid }}">
-    <td>  <input readonly class="form-control" type="text" name="boxid" value="{{ $ii }}" />  </td>
-    <td> <input required class="form-control" name="transactionDate" type="datetime-local" /> </td>
-    <td> <input required class="form-control" type="text" placeholder="eg:amount" name="depositamount"/> </td>
-    <td>  <button type="submit" class="btn btn-success px-2 ">Savee</button> </td>
-</form> 
-</tr> 
-
-
-@endif
-  
-   @else
-                <tr> 
-                    <form action="{{ route('customerTransactionpost') }}" method="post">
-                        @csrf
-                        <input type="hidden" name="pagenum" value="{{ $i + 1 }}">
-        <input type="hidden" name="bookletId" value="{{ $savingsBooklets->bookletId }}">
-        <input type="hidden" name="customerid" value="{{ $savingsBooklets->customerid }}">
-                    <td> <input readonly class="form-control" type="text" name="boxid" value="{{ $ii + 1 }} ee" />   </td>
-                    <td><input required class="form-control" name="transactionDate" type="datetime-local"/> </td>
-                    <td> <input required class="form-control" type="text" placeholder="eg:amount" name="depositamount"  /> </td>
-                    <td>  <button type="submit" class="btn btn-success px-2 ">Save</button> </td>
-                </form>
-            </tr>
-                @endif
-                
-
-                @endfor
-                 
-            
-            </tbody>
-          </table>
-    </div> 
-       @endfor
-  </div> --}}
 </div>
   <!--/ customer booklet pages -->
+  @section('customscript')
+  <script>
+    // 
+    var submitButtons = document.querySelectorAll(".submitFormButton");
+   
+    submitButtons.forEach(function (submitButton) {
+     
+      submitButton.addEventListener("click", function (e) {
+       e.preventDefault();
+       var totaldeposit = document.querySelector('#depost').textContent;
+       var balance = document.querySelector('#balancee').textContent;
+
+
+
+
+
+                var button = this;
+                var form = button.closest(".myFormContainer"); // Find the closest form container
+                var depositAmount = form.querySelector("[name='depositamount']").value;
+                var transactionDate = form.querySelector("[name='transactionDate']").value;
+                var pageNum = form.querySelector("[name='pagenum']").value;
+                var boxId = form.querySelector("[name='boxid']").value;
+                var bookletId = form.querySelector("[name='bookletId']").value;
+                var customerId = form.querySelector("[name='customerid']").value;
+
+                // Prepare data as JSON
+                var jsonData = {
+                    depositamount: depositAmount,
+                    transactionDate: transactionDate,
+                    pagenum: pageNum,
+                    boxid: boxId,
+                    bookletId: bookletId,
+                    customerid: customerId
+                };
+
+                console.log(totaldeposit);
+   if(totaldeposit != '-'){
+  totaldeposit = Number(totaldeposit) + Number(depositAmount) ;
+}else{
+  totaldeposit = '-'
+}
+
+if(balance != '-'){
+  balance = Number(balance) + Number(depositAmount) ;
+}else{
+  balance = '-'
+}
+
+
+                // console.log(jsonData) 
+                
+                
+                button.innerHTML = "Loading..."; // Show loading state
+ 
+                // Get CSRF token from meta tag
+                var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                // Send AJAX request
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "customerTransactionpost", true);
+                xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200 ) {
+                            button.innerHTML = "Paid";
+                           
+                            button.classList.add('btn-primary');
+                            button.classList.add('disabled');
+                            button.closest(".myFormContainer").querySelector("[name='transactionDate']").setAttribute('disabled', 'disabled');
+                            button.closest(".myFormContainer").querySelector("[name='depositamount']").setAttribute('disabled', 'disabled');
+                            button.classList.remove('btn-success');
+                            button.classList.remove('submitFormButton');
+                             // Change button text to "Paid"
+                             document.querySelector('#depost').innerHTML = totaldeposit;
+                             document.querySelector('#balancee').innerHTML = balance;
+
+                            console.log(xhr.response);
+                        } else {
+                          console.log(xhr.data);
+                          console.log(xhr.response);
+                            button.innerHTML = "Retry";
+                            button.classList.remove('btn-success');
+
+                            button.classList.add('btn-danger');
+                            button.classList.add('submitFormButton');
+                            button.closest(".myFormContainer").querySelector("[name='transactionDate']").setAttribute('disabled', 'disabled');
+                            button.closest(".myFormContainer").querySelector("[name='depositamount']").setAttribute('disabled', 'disabled');
+                            
+                        }
+                    }
+                };
+                xhr.send(JSON.stringify(jsonData)); 
+            });
+          });
+</script>
+  @endsection
   
 @endsection
 

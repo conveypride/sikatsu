@@ -36,7 +36,7 @@
 
   <!-- Include Scripts -->
   @include('layouts/sections/scripts')
-
+@yield('customscript')
 </body>
 
 </html>

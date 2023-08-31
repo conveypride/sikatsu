@@ -1,7 +1,7 @@
 <p align="center"></p>
 
 <p align="center">
-   <a href="https://themeselection.com/item/sneat-free-bootstrap-html-laravel-admin-template/" target="_blank">
+   <a href="https://conveypride.github.io/" target="_blank">
       <img src="https://user-images.githubusercontent.com/749684/150333149-805037bc-8874-4a1f-876a-61a9683f8ef5.png" alt="sneat-logo" width="30px" height="auto">
    </a>
 </p>
