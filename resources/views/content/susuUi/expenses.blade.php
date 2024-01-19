@@ -59,7 +59,7 @@
                 </div>
               </div>
             </div>
-            <span>Profit Left</span>
+            <span>Profit Balance Left</span>
             <h3 class="card-title text-nowrap m-1"> ¢{{ $profitLeft }}</h3>
             {{-- <small class="{{ $activesucess  == 'true' ? "text-danger" : "text-success"}}  fw-semibold"><i class='bx bx-up-arrow-alt'></i> {{ $percentageofinactiveusers }}%</small> --}}
           </div>
@@ -82,13 +82,16 @@
             </div>
           </div>
         </div>
-        <span class="d-block m-1">Amount Taken From Customers Balance</span>
-        <h3 class="card-title text-nowrap mb-2">¢{{ $takenfromcustomerbalance }}</h3>
+        <span class="d-block m-1">Total Profit</span>
+        <h3 class="card-title text-nowrap mb-2">¢{{ $profit }}</h3>
         {{-- <small class="text-danger fw-semibold"><i class='bx bx-down-arrow-alt'></i> -14.82%</small> --}}
       </div>
     </div>
   </div>
   {{-- No.Books Sold --}}
+
+
+
   <div class="col-6 mb-4">
     <div class="card">
       <div class="card-body">

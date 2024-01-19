@@ -1,0 +1,27 @@
+#!/bin/sh
+
+#checkout files
+git --work-tree=/var/www/html/sikatsu/ --git-dir=/var/www/html/sikatsu/deploy-github-hook.git checkout -f
+
+#install dependencies
+#cd /var/www/html/sikatsu/deploy-github-hook.git
+#npm install
+
+cd "/var/www/html/sikatsu"
+composer install --optimize-autoloader --no-dev
+yes | php artisan migrate
+php artisan key:generate
+php artisan optimize
+npm install
+#npm run build 
+php artisan migrate --force
+php artisan storage:link
+php artisan config:cache
+php artisan view:cache
+php artisan route:cache
+
+
+
+#Restart the app
+#service apache2 restart
+

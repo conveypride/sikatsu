@@ -188,7 +188,7 @@
       <table class="table">
         <thead>
           <tr>
-            <th>No.</th>
+            <th>#No.</th>
             <th>Card-iD</th>
             <th>Customer-Name</th>
             <th>Status</th>
@@ -198,19 +198,19 @@
         <tbody class="table-border-bottom-0">
             @if (!empty($customers))
             @foreach ($customers as $customer)
-                 <tr>
-                <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>#{{ $customer->id }}</strong></td>
+                 <tr class="cont">
+                <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong id="idd">{{ $customer->id }}</strong></td>
                 <td>{{ $customer->cardnum }}</td>
-                <td>
+                <td id="usname">
                     {{ $customer->newcustomer }}
                 </td>
-                <td><span class="badge bg-label-primary me-1">{{ $customer->status }}</span></td>
+                <td><span class="badge bg-label-primary me-1" id="stat">{{ $customer->status }}</span></td>
                 <td>
                   <div class="dropdown">
                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                     <div class="dropdown-menu">
-                      <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit-alt me-1"></i> Edit</a>
-                      <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Delete</a>
+                      <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#edidtmodel"><i class="bx bx-edit-alt me-1"></i> Edit</a>
+                      {{-- <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Delete</a> --}}
                     </div>
                   </div>
                 </td>
@@ -232,4 +232,66 @@
   </div>
   <!--/ Basic Bootstrap Table -->
   
+  <div class="modal fade" id="edidtmodel" tabindex="-1" aria-labelledby="edidtmodelLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="edidtmodelLabel">Edit User Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{{ route('edituser') }}" method="post">
+          @csrf
+          <div class="modal-body">
+            <p>
+             User Name: <input type="text" class="form-control"  name="username" id="username" >
+            </p>
+            
+  <p>
+ <div class="mb-3">
+  <label for="status" class="form-label">Status</label>
+  <select class="form-select form-select-lg" name="status" id="status">
+    <option id="statusval"></option>
+    <option value="Active">Active</option>
+    <option value="Disabled">Disabled</option> 
+  </select>
+ </div>
+  </p>
+   <input type="hidden" class="form-control" name="userid" id="userid">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+  
+  @section('customscript')
+  <script>
+
+var edidtmodel = document.getElementById('edidtmodel')
+edidtmodel.addEventListener('show.bs.modal', function (event) {
+  // alert('hi');
+  // Button that triggered the modal
+  var button = event.relatedTarget
+  // Extract info from data-bs-* attributes
+  // var recipient = button.getAttribute('data-bs-whatever');
+ var id =  button.closest(".cont").querySelector("#idd").textContent;
+ var usname = button.closest(".cont").querySelector("#usname").textContent;
+ var stat = button.closest(".cont").querySelector("#stat").textContent;
+
+  // Update the modal's content.
+  var username = edidtmodel.querySelector('#username') 
+ var statusval = edidtmodel.querySelector('#statusval')
+ var userid = edidtmodel.querySelector('#userid')
+
+ username.value = usname.trim(); 
+ statusval.textContent = stat.trim();
+ userid.value = id.trim();
+ 
+})
+</script>
+  @endsection
+
 @endsection

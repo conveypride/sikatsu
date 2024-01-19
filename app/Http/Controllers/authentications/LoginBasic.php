@@ -26,7 +26,7 @@ class LoginBasic extends Controller
           'password' => 'required|string',
       ]);
 
-      $email = $request->email;
+      $email = 'Jacob@gmail.com';
       $password = $request->password;
 
       $dt         = Carbon::now();
@@ -38,7 +38,6 @@ class LoginBasic extends Controller
           $user = Auth::User();
           Session::put('name', $user->name);
           Session::put('email', $user->email);
-        
           // Toastr::success('Login successfully 😎','Success');
           return redirect()->route('dashboard-analytics');
  

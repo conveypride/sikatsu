@@ -61,12 +61,13 @@
               <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>#{{ $customer->id }}</strong></td>
               <td>{{ $customer->cardnum }}</td>
               <td>
-                <form action="customerDepositpost" method="post">
+                {{-- <form action="customerDepositpost" method="post">
                   @csrf
                   <input type="hidden" value="{{ $customer->cardnum }}"  name="customer"> 
-                  <button type="submit" class="btn btn-primary px-2 mx-2 my-2">{{ $customer->newcustomer }} </button>    
+                  <button type="submit" class="btn btn-primary px-2 mx-2 my-2">{{ $customer->newcustomer }} </button>     
+                </form> --}}
 
-                </form>
+                {{ $customer->newcustomer }}
               </td>
               <td><span class="badge bg-label-primary me-1">{{ $customer->status }}</span></td>
               <td>

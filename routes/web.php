@@ -31,8 +31,11 @@ Route::controller(Generalcontroller::class)->group(function () {
     Route::get('customerTransactionpostget/{id}', 'customerTransactionpostget')->name('customerTransactionpostget');
     Route::post('withdrawpage', 'withdrawpage')->name('withdrawpage');
      Route::post('withdrawall', 'withdrawall')->name('withdrawall');
+      Route::post('increasePage', 'increasePage')->name('increasePage');
+       Route::post('edittransactions', 'edittransactions')->name('edittransactions');
+        Route::post('edituser', 'edituser')->name('edituser');
      Route::get('compare-total-deposit', 'compareTotalDepositPerYear')->name('compare-total-deposit');
-    // Route::get('adm/home', 'adminsDashboard')->name('adm/home');
+    Route::post('addBulkDeposit', 'addBulkDeposit')->name('addBulkDeposit');
     // Route::get('em/dashboard', 'emDashboard')->name('em/dashboard');
 });
 
